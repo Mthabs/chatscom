@@ -18,7 +18,6 @@ const Photo = (props) => {
       likephoto_id,  
       caption,
       image,
-      created_at,
       updated_at,
       photoPage,
       setPhotos,

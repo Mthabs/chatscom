@@ -10,7 +10,6 @@ import {
 import Avatar from "./Avatar";
 import axios from "axios";
 import useClickOutsideToggle from "../hooks/useClickOutsideToggle";
-import Friends from '../pages/friends/Friends'; 
 
 const NavBar = () => {
   const currentUser = useCurrentUser();
