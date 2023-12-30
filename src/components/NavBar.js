@@ -70,8 +70,7 @@ const NavBar = () => {
       >
         <i className="fas fa-heart"></i>Liked
       </NavLink>
-      {uploadPhotoIcon}
-      {uploadVideoIcon}
+      
       <NavLink className={styles.NavLink} to="/" onClick={handleSignOut}>
         <i className="fas fa-sign-out-alt"></i>Sign out
       </NavLink>
@@ -79,7 +78,7 @@ const NavBar = () => {
         className={styles.NavLink}
         to={`/profiles/${currentUser?.profile_id}`}
       >
-        <Avatar src={currentUser?.profile_image} text="Profile" height={40} />
+        <Avatar src={currentUser?.profile_picture} text="Profile" height={40} />
       </NavLink>
     </>
   );
@@ -116,6 +115,8 @@ const NavBar = () => {
           </Navbar.Brand>
         </NavLink>
         {currentUser && addPostIcon}
+        {uploadPhotoIcon}
+        {uploadVideoIcon}
         <Navbar.Toggle
           ref={ref}
           onClick={() => setExpanded(!expanded)}
