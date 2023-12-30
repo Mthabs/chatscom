@@ -64,9 +64,6 @@ const NavBar = () => {
       >
         <i className="fas fa-stream"></i>Feed
       </NavLink>
-      <NavLink className={styles.NavLink} to="/friends/requests">
-      <i className="fas fa-user-friends"></i>Friend Requests
-      </NavLink>
       <NavLink
         className={styles.NavLink}
         activeClassName={styles.Active}
