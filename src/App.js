@@ -15,6 +15,9 @@ import PostsPage from "./pages/posts/PostsPage";
 import PhotosPage from "./pages/photos/PhotosPage"; 
 import VideosPage from "./pages/videos/VideosPage";
 import { useCurrentUser } from "./contexts/CurrentUserContext";
+import PostEditForm from "./pages/posts/PostEditForm";
+import PhotoEditForm from "./pages/photos/PhotoEditForm";
+import VideoEditForm from "./pages/videos/VideoEditForm";
 
 function App() {
     const currentUser = useCurrentUser();
@@ -63,6 +66,9 @@ function App() {
           <Route exact path="/videos/:id" render={() => <VideoPage />} />
           <Route exact path="/photos/photos" render={() => <PhotosPage />} />
           <Route exact path="/videos/videos" render={() => <VideosPage />} />
+          <Route exact path="/posts/:id/edit" render={() => <PostEditForm />} />
+          <Route exact path="/photos/:id/edit" render={() => <PhotoEditForm />} />
+          <Route exact path="/videos/:id/edit" render={() => <VideoEditForm />} />
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
       </Container>
