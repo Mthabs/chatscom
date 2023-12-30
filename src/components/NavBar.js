@@ -35,6 +35,25 @@ const NavBar = () => {
       <i className="far fa-plus-square"></i>Add post
     </NavLink>
   );
+  const uploadPhotoIcon = (
+    <NavLink
+      className={styles.NavLink}
+      activeClassName={styles.Active}
+      to="/photos/upload"
+    >
+      <i className="far fa-images"></i>Upload photo
+    </NavLink>
+  );
+
+  const uploadVideoIcon = (
+    <NavLink
+      className={styles.NavLink}
+      activeClassName={styles.Active}
+      to="/videos/upload"
+    >
+      <i className="far fa-file-video"></i>Upload video
+    </NavLink>
+  );
   const loggedInIcons = (
     <>
       <NavLink
@@ -51,6 +70,8 @@ const NavBar = () => {
       >
         <i className="fas fa-heart"></i>Liked
       </NavLink>
+      {uploadPhotoIcon}
+      {uploadVideoIcon}
       <NavLink className={styles.NavLink} to="/" onClick={handleSignOut}>
         <i className="fas fa-sign-out-alt"></i>Sign out
       </NavLink>
