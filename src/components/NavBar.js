@@ -10,6 +10,7 @@ import {
 import Avatar from "./Avatar";
 import axios from "axios";
 import useClickOutsideToggle from "../hooks/useClickOutsideToggle";
+import Friends from '../pages/friends/Friends'; 
 
 const NavBar = () => {
   const currentUser = useCurrentUser();
@@ -63,6 +64,9 @@ const NavBar = () => {
       >
         <i className="fas fa-stream"></i>Feed
       </NavLink>
+      <NavLink className={styles.NavLink} to="/friends/requests">
+      <i className="fas fa-user-friends"></i>Friend Requests
+      </NavLink>
       <NavLink
         className={styles.NavLink}
         activeClassName={styles.Active}
@@ -70,7 +74,8 @@ const NavBar = () => {
       >
         <i className="fas fa-heart"></i>Liked
       </NavLink>
-      
+      {uploadPhotoIcon}
+      {uploadVideoIcon}
       <NavLink className={styles.NavLink} to="/" onClick={handleSignOut}>
         <i className="fas fa-sign-out-alt"></i>Sign out
       </NavLink>
@@ -78,7 +83,7 @@ const NavBar = () => {
         className={styles.NavLink}
         to={`/profiles/${currentUser?.profile_id}`}
       >
-        <Avatar src={currentUser?.profile_picture} text="Profile" height={40} />
+        <Avatar src={currentUser?.profile_image} text="Profile" height={40} />
       </NavLink>
     </>
   );
@@ -115,8 +120,6 @@ const NavBar = () => {
           </Navbar.Brand>
         </NavLink>
         {currentUser && addPostIcon}
-        {uploadPhotoIcon}
-        {uploadVideoIcon}
         <Navbar.Toggle
           ref={ref}
           onClick={() => setExpanded(!expanded)}
@@ -132,7 +135,13 @@ const NavBar = () => {
             >
               <i className="fas fa-home"></i>Home
             </NavLink>
-
+            <NavLink
+              className={styles.NavLink}
+              activeClassName={styles.Active}
+              to="/friends"
+            >
+              <i className="fas fa-user-friends"></i>Friends
+            </NavLink>
             {currentUser ? loggedInIcons : loggedOutIcons}
           </Nav>
         </Navbar.Collapse>

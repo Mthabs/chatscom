@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/Post.module.css";
+import styles from "../../styles/Photo.module.css";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { Card, Media, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
@@ -7,34 +7,34 @@ import Avatar from "../../components/Avatar";
 import { axiosRes } from "../../api/axiosDefaults";
 import { MoreDropdown } from "../../components/MoreDropdown";
 
-const Post = (props) => {
-  const {
-    id,
-    owner,
-    profile_id,
-    profile_image,
-    comments_count,
-    likes_count,
-    like_id,
-    title,
-    content,
-    image,
-    updated_at,
-    postPage,
-    setPosts,
-  } = props;
+const Photo = (props) => {
+    const {
+      id,
+      owner,
+      profile_id,
+      profile_image,
+      comment_count,  
+      like_count,    
+      likephoto_id,  
+      caption,
+      image,
+      created_at,
+      updated_at,
+      photoPage,
+      setPhotos,
+    } = props;
 
   const currentUser = useCurrentUser();
   const is_owner = currentUser?.username === owner;
   const history = useHistory();
 
   const handleEdit = () => {
-    history.push(`/posts/${id}/edit`);
+    history.push(`/photos/${id}/edit`);
   };
 
   const handleDelete = async () => {
     try {
-      await axiosRes.delete(`/posts/${id}/`);
+      await axiosRes.delete(`/photos/${id}/`);
       history.goBack();
     } catch (err) {
       console.log(err);
@@ -43,13 +43,13 @@ const Post = (props) => {
 
   const handleLike = async () => {
     try {
-      const { data } = await axiosRes.post("/likes/", { post: id });
-      setPosts((prevPosts) => ({
-        ...prevPosts,
-        results: prevPosts.results.map((post) => {
-          return post.id === id
-            ? { ...post, likes_count: post.likes_count + 1, like_id: data.id }
-            : post;
+      const { data } = await axiosRes.post("/likephotos/", { photo: id });
+      setPhotos((prevPhotos) => ({
+        ...prevPhotos,
+        results: prevPhotos.results.map((photo) => {
+          return photo.id === id
+            ? { ...photo, like_count: photo.like_count + 1, likephoto_id: data.id }
+            : photo;
         }),
       }));
     } catch (err) {
@@ -59,13 +59,13 @@ const Post = (props) => {
 
   const handleUnlike = async () => {
     try {
-      await axiosRes.delete(`/likes/${like_id}/`);
-      setPosts((prevPosts) => ({
-        ...prevPosts,
-        results: prevPosts.results.map((post) => {
-          return post.id === id
-            ? { ...post, likes_count: post.likes_count - 1, like_id: null }
-            : post;
+      await axiosRes.delete(`/likephotos/${likephoto_id}/`);
+      setPhotos((prevPhotos) => ({
+        ...prevPhotos,
+        results: prevPhotos.results.map((photo) => {
+          return photo.id === id
+            ? { ...photo, like_count: photo.like_count - 1, likephoto_id: null }
+            : photo;
         }),
       }));
     } catch (err) {
@@ -74,7 +74,7 @@ const Post = (props) => {
   };
 
   return (
-    <Card className={styles.Post}>
+    <Card className={styles.Photo}>
       <Card.Body>
         <Media className="align-items-center justify-content-between">
           <Link to={`/profiles/${profile_id}`}>
@@ -83,7 +83,7 @@ const Post = (props) => {
           </Link>
           <div className="d-flex align-items-center">
             <span>{updated_at}</span>
-            {is_owner && postPage && (
+            {is_owner && photoPage && (
               <MoreDropdown
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
@@ -92,45 +92,44 @@ const Post = (props) => {
           </div>
         </Media>
       </Card.Body>
-      <Link to={`/posts/${id}`}>
-        <Card.Img src={image} alt={title} />
+      <Link to={`/photos/${id}`}>
+        <Card.Img src={image} alt={caption} /> 
       </Link>
       <Card.Body>
-        {title && <Card.Title className="text-center">{title}</Card.Title>}
-        {content && <Card.Text>{content}</Card.Text>}
-        <div className={styles.PostBar}>
-          {is_owner ? (
+        {caption && <Card.Title className="text-center">{caption}</Card.Title>}
+        <div className={styles.PhotoBar}>
+            {is_owner ? (
             <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip>You can't like your own post!</Tooltip>}
+                placement="top"
+                overlay={<Tooltip>You can't like your own photo!</Tooltip>}
             >
-              <i className="far fa-heart" />
+                <i className="far fa-heart" />
             </OverlayTrigger>
-          ) : like_id ? (
-            <span onClick={handleUnlike}>
-              <i className={`fas fa-heart ${styles.Heart}`} />
-            </span>
-          ) : currentUser ? (
-            <span onClick={handleLike}>
-              <i className={`far fa-heart ${styles.HeartOutline}`} />
-            </span>
-          ) : (
+            ) : likephoto_id ? (
+                <span onClick={handleUnlike}>
+                <i className={`fas fa-heart ${styles.Heart}`} />
+                </span>
+            ) : currentUser ? (
+                <span onClick={handleLike}>
+                <i className={`far fa-heart ${styles.HeartOutline}`} />
+                </span>
+            ) : (
             <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip>Log in to like posts!</Tooltip>}
+                placement="top"
+                overlay={<Tooltip>Log in to like photos!</Tooltip>}
             >
-              <i className="far fa-heart" />
+                <i className="far fa-heart" />
             </OverlayTrigger>
-          )}
-          {likes_count}
-          <Link to={`/posts/${id}`}>
-            <i className="far fa-comments" />
-          </Link>
-          {comments_count}
+            )}
+            {like_count}
+            <Link to={`/photos/${id}`}>
+                <i className="far fa-comments" />
+            </Link>
+            {comment_count} 
         </div>
       </Card.Body>
     </Card>
   );
 };
 
-export default Post;
+export default Photo;

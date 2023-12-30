@@ -6,14 +6,14 @@ import "./api/axiosDefaults";
 import SignUpForm from "./pages/auth/SignUpForm";
 import SignInForm from "./pages/auth/SignInForm";
 import PostCreateForm from "./pages/posts/PostCreateForm";
-import PhotoUploadForm from "./pages/photos/PhotoUploadForm";
-import VideoUploadForm from "./pages/videos/VideoUploadForm";
 import PostPage from "./pages/posts/PostPage";
-import PhotoPage from "./pages/photos/PhotoPage";
-import VideoPage from "./pages/videos/VideoPage";
 import PostsPage from "./pages/posts/PostsPage";
+import PhotoUploadForm from "./pages/photos/PhotoUploadForm";
+import PhotoPage from "./pages/photos/PhotoPage";
 import PhotosPage from "./pages/photos/PhotosPage"; 
 import VideosPage from "./pages/videos/VideosPage";
+import VideoUploadForm from "./pages/videos/VideoUploadForm";
+import VideoPage from "./pages/videos/VideoPage";
 import { useCurrentUser } from "./contexts/CurrentUserContext";
 import PostEditForm from "./pages/posts/PostEditForm";
 import PhotoEditForm from "./pages/photos/PhotoEditForm";
@@ -22,17 +22,18 @@ import ProfilePage from "./pages/profiles/ProfilePage";
 import UsernameForm from "./pages/profiles/UsernameForm";
 import UserPasswordForm from "./pages/profiles/UserPasswordForm";
 import ProfileEditForm from "./pages/profiles/ProfileEditForm";
+import Friends from './pages/friends/Friends';
 
 function App() {
-    const currentUser = useCurrentUser();
-    const profile_id = currentUser?.profile_id || "";
-    
+  const currentUser = useCurrentUser();
+  const profile_id = currentUser?.profile_id || "";
+
   return (
     <div className={styles.App}>
       <NavBar />
       <Container className={styles.Main}>
         <Switch>
-        <Route
+          <Route
             exact
             path="/"
             render={() => (
@@ -59,22 +60,21 @@ function App() {
               />
             )}
           />
-          <Route exact path="/" render={() => <h1>Home page</h1>} />
           <Route exact path="/signin" render={() => <SignInForm />} />
           <Route exact path="/signup" render={() => <SignUpForm />} />
           <Route exact path="/posts/create" render={() => <PostCreateForm />} />
-          <Route exact path="/photos/upload" render={() => <PhotoUploadForm />} />
-          <Route exact path="/videos/upload" render={() => <VideoUploadForm />} />
           <Route exact path="/posts/:id" render={() => <PostPage />} />
-          <Route exact path="/photos/:id" render={() => <PhotoPage />} />
-          <Route exact path="/videos/:id" render={() => <VideoPage />} />
-          <Route exact path="/photos/photos" render={() => <PhotosPage />} />
-          <Route exact path="/videos/videos" render={() => <VideosPage />} />
           <Route exact path="/posts/:id/edit" render={() => <PostEditForm />} />
-          <Route exact path="/photos/:id/edit" render={() => <PhotoEditForm />} />
-          <Route exact path="/videos/:id/edit" render={() => <VideoEditForm />} />
           <Route exact path="/profiles/:id" render={() => <ProfilePage />} />
-          <Route render={() => <p>Page not found!</p>} />
+          <Route exact path="/photos/upload" render={() => <PhotoUploadForm />} />
+          <Route exact path="/photos/:id" render={() => <PhotoPage />} />
+          <Route exact path="/photos/photos" render={() => <PhotosPage />} />
+          <Route exact path="/photos/:id/edit" render={() => <PhotoEditForm />} />
+          <Route exact path="/videos/upload" render={() => <VideoUploadForm />} />
+          <Route exact path="/videos/:id" render={() => <VideoPage />} />
+          <Route exact path="/videos/videos" render={() => <VideosPage />} />
+          <Route exact path="/videos/:id/edit" render={() => <VideoEditForm />} />
+          <Route path="/friends" render={() => <Friends />} />
           <Route
             exact
             path="/profiles/:id/edit/username"
