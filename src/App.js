@@ -10,6 +10,7 @@ import PhotoUploadForm from "./pages/photos/PhotoUploadForm";
 import VideoUploadForm from "./pages/videos/VideoUploadForm";
 import PostPage from "./pages/posts/PostPage";
 import PhotoPage from "./pages/photos/PhotoPage";
+import VideoPage from "./pages/videos/VideoPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/videos/upload" render={() => <VideoUploadForm />} />
           <Route exact path="/posts/:id" render={() => <PostPage />} />
           <Route exact path="/photos/:id" render={() => <PhotoPage />} />
+          <Route exact path="/videos/:id" render={() => <VideoPage />} />
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
       </Container>
