@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-export let baseUrl;
-if (process.env.NODE_ENV === 'development') {
-    baseUrl = 'http://127.0.0.1:8000';
-} else if (process.env.NODE_ENV === 'production') {
-    baseUrl = 'https://chatcomdrfapi-40ddf4304b07.herokuapp.com';
-} else {
-    baseUrl = 'http://127.0.0.1:8000';
-}
+export let baseUrl = 'https://chatcomdrfapi-40ddf4304b07.herokuapp.com'
+// if (process.env.NODE_ENV === 'development') {
+//     baseUrl = 'http://127.0.0.1:8000';
+// } else if (process.env.NODE_ENV === 'production') {
+//     baseUrl = 'https://chatcomdrfapi-40ddf4304b07.herokuapp.com';
+// } else {
+//     baseUrl = 'http://127.0.0.1:8000';
+// }
 
 
 function getIRequestProp(isMultipart) {
