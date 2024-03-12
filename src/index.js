@@ -3,29 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './contexts/JWTContext';
-import { HelmetProvider } from 'react-helmet-async';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/lib/integration/react';
-import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
-import { persistor, store } from './redux/store';
+import {BrowserRouter} from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
-  <AuthProvider>
-    <HelmetProvider>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <CollapseDrawerProvider>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
-          </CollapseDrawerProvider>
-        </PersistGate>
-      </Provider>
-    </HelmetProvider>
-  </AuthProvider>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <BrowserRouter>
+            <App/>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+        </BrowserRouter>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,39 +1,58 @@
-import Router from './routes';
-import ThemeProvider from './theme';
-// import NavBar from './components/NavBar';
-// import Container from 'react-bootstrap/Container';
-// import { Route, Switch } from 'react-router-dom';
-// import './api/axiosDefaults';
-// import SignUpForm from './pages/auth/SignUpForm';
-// import SignInForm from './pages/auth/SignInForm';
-// import PostCreateForm from './pages/posts/PostCreateForm';
-// import PostPage from './pages/posts/PostPage';
-// import PostsPage from './pages/posts/PostsPage';
-// import PhotoUploadForm from './pages/photos/PhotoUploadForm';
-// import PhotoPage from './pages/photos/PhotoPage';
-// import PhotosPage from './pages/photos/PhotosPage';
-// import VideosPage from './pages/videos/VideosPage';
-// import VideoUploadForm from './pages/videos/VideoUploadForm';
-// import VideoPage from './pages/videos/VideoPage';
-// import { useCurrentUser } from './contexts/CurrentUserContext';
-// import PostEditForm from './pages/posts/PostEditForm';
-// import PhotoEditForm from './pages/photos/PhotoEditForm';
-// import VideoEditForm from './pages/videos/VideoEditForm';
-// import ProfilePage from './pages/profiles/ProfilePage';
-// import UsernameForm from './pages/profiles/UsernameForm';
-// import UserPasswordForm from './pages/profiles/UserPasswordForm';
-// import ProfileEditForm from './pages/profiles/ProfileEditForm';
-// import Friends from './pages/friends/Friends';
+import {Route, Switch} from "react-router-dom";
+import Home from "./pages/home/home";
+import Videos from "./pages/videos/videos";
+import Photos from "./pages/photos/photos";
+import NotFound from "./pages/not-found/not-found";
+import "./styles/global.css"
+import Login from "./pages/login/login";
+import {AuthProvider} from "./Contexts/AuthContext";
+import Friends from "./pages/friends/friends";
+import Profile from "./pages/profile/profile";
+import SignUp from "./pages/sign-up/sign-up";
 
 function App() {
-  // const currentUser = useCurrentUser();
-  // const profile_id = currentUser?.profile_id || '';
-
-  return (
-    <ThemeProvider>
-      <Router />
-    </ThemeProvider>
-  );
+    return (
+        <>
+            <Switch>
+                <Route exact path="/" render={() => (
+                    <AuthProvider>
+                        <Login/>
+                    </AuthProvider>
+                )}/>
+                <Route exact path="/signup" render={() => (
+                    <AuthProvider>
+                        <SignUp/>
+                    </AuthProvider>
+                )}/>
+                <Route exact path="/feed/home" render={() => (
+                    <AuthProvider>
+                        <Home/>
+                    </AuthProvider>
+                )}/>
+                <Route path="/feed/videos" render={() => (
+                    <AuthProvider>
+                        <Videos/>
+                    </AuthProvider>
+                )}/>
+                <Route path="/feed/photos" render={() => (
+                    <AuthProvider>
+                        <Photos/>
+                    </AuthProvider>
+                )}/>
+                <Route path="/feed/friends" render={() => (
+                    <AuthProvider>
+                        <Friends/>
+                    </AuthProvider>
+                )}/>
+                <Route path="/feed/profile" render={() => (
+                    <AuthProvider>
+                        <Profile/>
+                    </AuthProvider>
+                )}/>
+                <Route component={NotFound}/>
+            </Switch>
+        </>
+    );
 }
 
 export default App;
