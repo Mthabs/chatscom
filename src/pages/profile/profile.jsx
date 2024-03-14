@@ -132,7 +132,7 @@ const Profile = () => {
                     </form>
                 </div>
                 <div className="shadow-sm border border-info rounded-lg p-4">
-                    <h4 className="mb-4">Follwers</h4>
+                    <h4 className="mb-4">Followers</h4>
                     <div className="row">
                         {
                             loading ?
