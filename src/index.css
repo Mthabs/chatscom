@@ -4,15 +4,15 @@
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+        monospace;
 }
 
 p {
@@ -36,10 +36,31 @@ p {
     padding: 0;
     outline: 0;
 }
-.edit #dropdown-basic:focus{
+
+.edit #dropdown-basic:focus {
     box-shadow: none;
 }
-.error-message{
+
+.error-message {
     color: red;
     font-weight: 500;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #084cdf;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+}
+
+#fileUpload {
+    height: auto !important;
+}
+
+.like_comment {
+    font-size: 20px;
 }

@@ -9,8 +9,6 @@ import {toast} from "react-toastify";
 const EditModal = ({modalOpen, setModalOpen, photo, setPhotos}) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    // console.log(photo)
-
     const form = useForm({
         resolver: zodResolver(photo1Schema),
         defaultValues: {
@@ -68,6 +66,7 @@ const EditModal = ({modalOpen, setModalOpen, photo, setPhotos}) => {
                             type="submit"
                             disabled={isLoading}
                         >
+                            {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
                             Update Photo
                         </button>
                     </div>

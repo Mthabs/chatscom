@@ -73,6 +73,7 @@ const CommentEditModal = ({modalOpen, setModalOpen, comment, setComments, setCom
                             type="submit"
                             disabled={isLoading}
                         >
+                            {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
                             Update Comment
                         </button>
                     </div>

@@ -7,6 +7,8 @@ import {useForm} from "react-hook-form";
 import {toast} from "react-toastify";
 import CommentEditModal from "../post/comment-edit-modal";
 import VideoEditModal from "./video-edit-modal";
+import DeleteModal from "../modal/delete-modal";
+import CommentDeleteModal from "../modal/comment-delete-modal";
 
 const VideoItem = ({video, setVideos}) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -15,6 +17,13 @@ const VideoItem = ({video, setVideos}) => {
     const [commentsCount, setCommentsCount] = useState(0)
     const [commentEditModalOpen, setCommentEditModalOpen] = useState(false);
     const [comment, setComment] = useState({})
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteVideoLoader, setDeleteVideoLoader] = useState(false);
+    const [deleteVideo, setDeleteVideo] = useState(null)
+
+    const [commentDeleteModalOpen, setCommentDeleteModalOpen] = useState(false);
+    const [deleteCommentLoader, setDeleteCommentLoader] = useState(false)
+    const [deleteComment, setDeleteComment] = useState(null)
 
     const form = useForm({
         resolver: zodResolver(commentSchema),
@@ -30,7 +39,7 @@ const VideoItem = ({video, setVideos}) => {
             ...data
         }
         try {
-            let response = await AxiosServices.post(`/videocomments/`, payload, false)
+            await AxiosServices.post(`/videocomments/`, payload, false)
             setIsLoading(false)
             form.reset()
         } catch (err) {
@@ -39,24 +48,33 @@ const VideoItem = ({video, setVideos}) => {
         }
     }
 
-    const handleDeleteVideo = async (video) => {
+    const handleDeleteVideo = async () => {
+        setDeleteVideoLoader(true)
         try {
-            await AxiosServices.remove(`/videos/${video?.id}`)
-            setVideos(prev => prev.filter(prevVideo => prevVideo.id !== video?.id));
+            await AxiosServices.remove(`/videos/${deleteVideo?.id}`)
+            setVideos(prev => prev.filter(prevVideo => prevVideo.id !== deleteVideo?.id));
             toast('Video deleted successfully!')
+            setDeleteVideoLoader(false)
+            setDeleteModalOpen(false)
         } catch (e) {
             console.log(e)
+            setDeleteVideoLoader(false)
         }
     }
 
-    const handleDeleteComment = async (comment) => {
+    const handleDeleteComment = async () => {
+        setDeleteCommentLoader(true)
         try {
-            await AxiosServices.remove(`/videocomments/${comment?.id}`)
-            setComments(prev => prev.filter(prevComment => prevComment.id !== comment?.id));
+            await AxiosServices.remove(`/videocomments/${deleteComment?.id}`)
+            setComments(prev => prev.filter(prevComment => prevComment.id !== deleteComment?.id));
             setCommentsCount(prevCommentsCount => prevCommentsCount - 1)
             toast('Video comment delete successfully!')
+            setDeleteCommentLoader(false)
+            setCommentDeleteModalOpen(false)
+            setDeleteComment(null)
         } catch (e) {
             console.log(e)
+            setDeleteCommentLoader(false)
         }
     }
 
@@ -75,7 +93,7 @@ const VideoItem = ({video, setVideos}) => {
 
     async function handleUnLikeVideo() {
         try {
-            let response = await AxiosServices.remove(`/likevideos/${video.likevideo_id}`)
+            await AxiosServices.remove(`/likevideos/${video.likevideo_id}`)
             setVideos(videos => videos.map(prevVideo => prevVideo.id === video.id ? {
                 ...prevVideo,
                 like_count: prevVideo?.like_count - 1,
@@ -121,7 +139,10 @@ const VideoItem = ({video, setVideos}) => {
                                 </Dropdown.Item>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item
-                                    onClick={() => handleDeleteVideo(video)}
+                                    onClick={() => {
+                                        setDeleteModalOpen(true)
+                                        setDeleteVideo(video)
+                                    }}
                                 >
                                     <i
                                         className="bi bi-trash mr-1"
@@ -177,7 +198,10 @@ const VideoItem = ({video, setVideos}) => {
                                                         </Dropdown.Item>
                                                         <Dropdown.Divider/>
                                                         <Dropdown.Item
-                                                            onClick={() => handleDeleteComment(comment)}
+                                                            onClick={() => {
+                                                                setCommentDeleteModalOpen(true)
+                                                                setDeleteComment(comment)
+                                                            }}
                                                         >
                                                             <i
                                                                 className="bi bi-trash mr-1"
@@ -203,11 +227,11 @@ const VideoItem = ({video, setVideos}) => {
                         {
                             video.likevideo_id ?
                                 <i
-                                    className="bi bi-hand-thumbs-up-fill mr-1 cursor-pointer"
+                                    className="bi bi-hand-thumbs-up-fill mr-1 cursor-pointer like_comment"
                                     onClick={handleUnLikeVideo}
                                 /> :
                                 <i
-                                    className="bi bi-hand-thumbs-up mr-1 cursor-pointer"
+                                    className="bi bi-hand-thumbs-up mr-1 cursor-pointer like_comment"
                                     onClick={handleLikeVideo}
                                 />
                         }
@@ -217,7 +241,7 @@ const VideoItem = ({video, setVideos}) => {
                         </span>
                     </Col>
                     <Col xs="auto" className="d-flex align-items-center">
-                        <i className="bi bi-chat-dots mr-1 cursor-pointer"></i>
+                        <i className="bi bi-chat-dots mr-1 cursor-pointer like_comment"></i>
                         <span>
                         {commentsCount}
                             {commentsCount > 1 ? " Comments" : " Comment"}
@@ -249,12 +273,38 @@ const VideoItem = ({video, setVideos}) => {
                             disabled={isLoading}
                             type="submit"
                         >
-                            <i className="bi bi-send-arrow-up-fill"></i>
+                            <div className="d-flex align-items-center justify-content-between">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                <i className="bi bi-send-arrow-up-fill"></i>
+                            </div>
                         </Button>
                     </form>
                 </div>
 
             </div>
+
+            {
+                deleteModalOpen &&
+                <DeleteModal
+                    handleDelete={handleDeleteVideo}
+                    modalOpen={deleteModalOpen}
+                    setModalOpen={setDeleteModalOpen}
+                    loader={deleteVideoLoader}
+                    item="video"
+                    itemName={video.title}
+                />
+            }
+
+            {
+                commentDeleteModalOpen &&
+                <CommentDeleteModal
+                    loader={deleteCommentLoader}
+                    modalOpen={commentDeleteModalOpen}
+                    setModalOpen={setCommentDeleteModalOpen}
+                    itemName={deleteComment.content}
+                    handleDelete={handleDeleteComment}
+                />
+            }
 
             {
                 commentEditModalOpen &&

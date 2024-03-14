@@ -7,12 +7,12 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import PhotoItem from "../../components/photo/photo-item";
 import {Helmet} from "react-helmet";
+import CardLoader from "../../components/loader/card-loader";
 
 const Photos = () => {
     const [photos, setPhotos] = useState([])
-    const [image, setImage] = useState(null)
-    const [fileName, setFileName] = useState("")
     const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState([])
 
     const {
@@ -38,8 +38,6 @@ const Photos = () => {
         try {
             let response = await AxiosServices.post('/photos/', formData, true)
             setIsLoading(false)
-            setImage("")
-            setFileName("")
             reset()
             toast.success('Photo created successfully!')
             setPhotos(photos => [response.data, ...photos])
@@ -54,8 +52,10 @@ const Photos = () => {
         try {
             let response = await AxiosServices.get('/photos/')
             setPhotos(response.data.results)
+            setLoading(false)
         } catch (error) {
             console.log(error)
+            setLoading(false)
         }
     }
     useEffect(() => {
@@ -75,6 +75,7 @@ const Photos = () => {
                             <p key={error} className="font-weight-lighter error-message">{error}</p>
                         ))
                     }
+                    <h4 className="mb-2">Create a Photo</h4>
                     <form
                         onSubmit={handleSubmit(onsubmit)}
                     >
@@ -84,7 +85,7 @@ const Photos = () => {
                                 className="form-control"
                                 id="textarea"
                                 rows="3"
-                                placeholder="Enter your text here"
+                                placeholder="Enter type here photo caption"
                                 {...register("caption")}
                             >
                             </textarea>
@@ -97,11 +98,8 @@ const Photos = () => {
                                 name="image"
                                 type="file"
                                 accept="image/*"
-                                className="form-control-file"
+                                className="form-control"
                                 id="fileUpload"
-                                onChange={e => {
-                                    setImage(e.target.files[0])
-                                }}
                                 {...register("image")}
                             />
                             {errors?.image && (
@@ -109,15 +107,28 @@ const Photos = () => {
                             )}
                         </div>
                         <div className="d-flex justify-content-end">
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <button type="submit" className="btn btn-primary">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                {isLoading ? "Creating" : "Create"}
+                            </button>
                         </div>
                     </form>
                 </div>
 
                 {
-                    photos.map(photo => (
-                        <PhotoItem photo={photo} key={photo.id} setPhotos={setPhotos}/>
-                    ))
+                    loading ? <>
+                            <CardLoader/>
+                            <CardLoader/>
+                            <CardLoader/>
+                        </> :
+                        photos.length > 0 ?
+                            photos.map(photo => (
+                                <PhotoItem photo={photo} key={photo.id} setPhotos={setPhotos}/>
+                            ))
+                            :
+                            <div className="border p-3 mb-3 rounded contentbox">
+                                <p className="mt-10 font-weight-bold text-center">No data found</p>
+                            </div>
                 }
 
             </div>

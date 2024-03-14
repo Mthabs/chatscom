@@ -5,6 +5,7 @@ import {Dropdown} from "react-bootstrap";
 import {useAuth} from "../../Contexts/AuthContext";
 import AxiosServices from "../../Config/AxiosServices";
 import {setSession} from "../../lib/utils";
+import Logo from "../../assets/logo/logo.png"
 
 const Header = () => {
     const {setIsAuthenticated, user, setUser} = useAuth()
@@ -36,9 +37,11 @@ const Header = () => {
     }
 
     return (
-        <header id="header" className="fixed-top d-flex align-items-center">
+        <header id="header" className="fixed-top d-flex align-items-center shadow-sm">
             <div className="container d-flex align-items-center">
-                <h1 className="logo mr-auto"><NavLink to="/">ChatsCom</NavLink></h1>
+                <h1 className="logo mr-auto"><NavLink to="/">
+                    <img src={Logo} alt=""/>
+                </NavLink></h1>
 
                 <nav id="navbar" className="navbar order-last order-lg-0">
                     <ul>

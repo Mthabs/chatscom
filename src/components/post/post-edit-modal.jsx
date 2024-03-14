@@ -67,6 +67,8 @@ const PostEditModal = ({modalOpen, setModalOpen, post, setPosts}) => {
                             type="submit"
                             disabled={isLoading}
                         >
+                            {isLoading &&
+                            <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
                             Update Post
                         </button>
                     </div>

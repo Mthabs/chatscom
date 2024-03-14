@@ -7,11 +7,12 @@ import AxiosServices from "../../Config/AxiosServices";
 import {toast} from "react-toastify";
 import SinglePost from "../../components/post/singlePost";
 import {Helmet} from "react-helmet";
+import CardLoader from "../../components/loader/card-loader";
 
 const Home = () => {
     const [posts, setPosts] = useState([])
-    const [image, setImage] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const {
         reset,
         register,
@@ -26,7 +27,7 @@ const Home = () => {
     });
 
     const onSubmit = async (data) => {
-
+        setIsLoading(true)
         let formData = new FormData();
         formData.append('content', data.content);
 
@@ -36,9 +37,7 @@ const Home = () => {
 
         try {
             let response = await AxiosServices.post('/posts/', formData, true)
-            // console.log(response.data)
             setIsLoading(false)
-            setImage("")
             reset()
             toast.success('Post created successfully!')
             setPosts(posts => [response.data, ...posts])
@@ -53,8 +52,10 @@ const Home = () => {
             let response = await AxiosServices.get('/posts/')
             // console.log(response.data)
             setPosts(response.data.results)
+            setLoading(false)
         } catch (error) {
             console.log(error)
+            setLoading(false)
         }
     }
     useEffect(() => {
@@ -70,6 +71,7 @@ const Home = () => {
             </Helmet>
             <div className="contentbox">
                 <div className="border p-3 mb-3 rounded">
+                    <h4 className="mb-2">Create a Post</h4>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group">
                             <textarea
@@ -85,16 +87,17 @@ const Home = () => {
                                 <p className="mt-1 error-message">{errors.content.message}</p>
                             )}
                         </div>
+
                         <div className="form-group">
                             <input
                                 name="post_picture"
                                 type="file"
                                 accept="image/*"
-                                className="form-control-file"
+                                className="form-control "
                                 id="fileUpload"
-                                onChange={e => {
-                                    setImage(e.target.files[0])
-                                }}
+                                // onChange={e => {
+                                //     setImage(e.target.files[0])
+                                // }}
                                 {...register("post_picture")}
                             />
                             {errors?.post_picture && (
@@ -102,15 +105,31 @@ const Home = () => {
                             )}
                         </div>
                         <div className="d-flex justify-content-end">
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <button type="submit" className="btn btn-primary">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                {isLoading ? "Posting" : "Post"}
+                            </button>
                         </div>
                     </form>
                 </div>
 
                 {
-                    posts.map(post => (
-                        <SinglePost key={post.id} post={post} setPosts={setPosts}/>
-                    ))
+                    loading ?
+                        <>
+                            <CardLoader/>
+                            <CardLoader/>
+                            <CardLoader/>
+                            <CardLoader/>
+                        </>
+                        :
+                        posts.length > 0 ?
+                            posts.map(post => (
+                                <SinglePost key={post.id} post={post} setPosts={setPosts}/>
+                            ))
+                            :
+                            <div className="border p-3 mb-3 rounded contentbox">
+                                <p className="mt-10 font-weight-bold text-center">No data found</p>
+                            </div>
                 }
             </div>
         </Layout>

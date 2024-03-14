@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {videoCreateSchema} from "../../lib/validations/video";
@@ -84,6 +84,7 @@ const VideoEditModal = ({modalOpen, setModalOpen, video, setVideos}) => {
                             type="submit"
                             disabled={isLoading}
                         >
+                            {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
                             Update Video
                         </button>
                     </div>

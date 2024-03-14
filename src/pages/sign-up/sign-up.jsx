@@ -187,6 +187,7 @@ const SignUp = () => {
                             type="submit"
                             disabled={false}
                         >
+                            {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
                             Signup
                         </button>
                     </div>

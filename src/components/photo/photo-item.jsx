@@ -7,15 +7,24 @@ import {toast} from "react-toastify";
 import {Button, Col, Dropdown, FormGroup, Row} from "react-bootstrap";
 import CommentEditModal from "../post/comment-edit-modal";
 import EditModal from "./edit-modal";
+import DeleteModal from "../modal/delete-modal";
+import CommentDeleteModal from "../modal/comment-delete-modal";
 
 const PhotoItem = ({photo, setPhotos}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [commentEditModalOpen, setCommentEditModalOpen] = useState(false);
-
     const [isLoading, setIsLoading] = useState(false);
     const [comments, setComments] = useState([])
     const [comment, setComment] = useState({})
     const [commentsCount, setCommentsCount] = useState(0)
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deletePhotoLoader, setDeletePhotoLoader] = useState(false);
+    const [deletePhoto, setDeletePhoto] = useState(null)
+
+    const [commentDeleteModalOpen, setCommentDeleteModalOpen] = useState(false);
+    const [deleteCommentLoader, setDeleteCommentLoader] = useState(false)
+    const [deleteComment, setDeleteComment] = useState(null)
 
     const form = useForm({
         resolver: zodResolver(commentSchema),
@@ -41,23 +50,32 @@ const PhotoItem = ({photo, setPhotos}) => {
         }
     }
 
-    const handleDeletePhoto = async (photo) => {
+    const handleDeletePhoto = async () => {
+        setDeletePhotoLoader(true)
         try {
-            await AxiosServices.remove(`/photos/${photo?.id}`)
-            setPhotos(prev => prev.filter(prevPhoto => prevPhoto.id !== photo?.id));
+            await AxiosServices.remove(`/photos/${deletePhoto?.id}`)
+            setPhotos(prev => prev.filter(prevPhoto => prevPhoto.id !== deletePhoto?.id));
             toast.success('Photo deleted successfully!')
+            setDeletePhotoLoader(false)
+            setDeleteModalOpen(false)
         } catch (e) {
             console.log(e)
+            setDeletePhotoLoader(false)
         }
     }
-    const handleDeleteComment = async (comment) => {
+    const handleDeleteComment = async () => {
+        setDeleteCommentLoader(true)
         try {
-            await AxiosServices.remove(`/photocomments/${comment?.id}`)
-            setComments(prev => prev.filter(prevComment => prevComment.id !== comment?.id));
+            await AxiosServices.remove(`/photocomments/${deleteComment?.id}`)
+            setComments(prev => prev.filter(prevComment => prevComment.id !== deleteComment?.id));
             setCommentsCount(prevCommentsCount => prevCommentsCount - 1)
             toast('Photo comment delete successfully!')
+            setDeleteCommentLoader(false)
+            setCommentDeleteModalOpen(false)
+            setDeleteComment(null)
         } catch (e) {
             console.log(e)
+            setDeleteCommentLoader(false)
         }
     }
 
@@ -122,7 +140,10 @@ const PhotoItem = ({photo, setPhotos}) => {
                                 </Dropdown.Item>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item
-                                    onClick={() => handleDeletePhoto(photo)}
+                                    onClick={() => {
+                                        setDeletePhoto(photo)
+                                        setDeleteModalOpen(true)
+                                    }}
                                 >
                                     <i
                                         className="bi bi-trash mr-1"
@@ -147,8 +168,8 @@ const PhotoItem = ({photo, setPhotos}) => {
                 {/* Photo Details */}
                 <div className="d-flex align-items-center mb-2">
                     <img
-                        src="https://placekitten.com/40/40"
-                        alt="User Avatar"
+                        src="https://placekitten.com/50/50"
+                        alt="user"
                         className="rounded-circle mr-2"
                     />
                     <div>
@@ -189,7 +210,10 @@ const PhotoItem = ({photo, setPhotos}) => {
                                                         </Dropdown.Item>
                                                         <Dropdown.Divider/>
                                                         <Dropdown.Item
-                                                            onClick={() => handleDeleteComment(comment)}
+                                                            onClick={() => {
+                                                                setCommentDeleteModalOpen(true)
+                                                                setDeleteComment(comment)
+                                                            }}
                                                         >
                                                             <i
                                                                 className="bi bi-trash mr-1"
@@ -215,11 +239,11 @@ const PhotoItem = ({photo, setPhotos}) => {
                         {
                             photo.likephoto_id ?
                                 <i
-                                    className="bi bi-hand-thumbs-up-fill mr-1 cursor-pointer"
+                                    className="bi bi-hand-thumbs-up-fill mr-1 cursor-pointer like_comment"
                                     onClick={handleUnLikePhoto}
                                 /> :
                                 <i
-                                    className="bi bi-hand-thumbs-up mr-1 cursor-pointer"
+                                    className="bi bi-hand-thumbs-up mr-1 cursor-pointer like_comment"
                                     onClick={handleLikePhoto}
                                 />
                         }
@@ -229,7 +253,7 @@ const PhotoItem = ({photo, setPhotos}) => {
                         </span>
                     </Col>
                     <Col xs="auto" className="d-flex align-items-center">
-                        <i className="bi bi-chat-dots mr-1 cursor-pointer"></i>
+                        <i className="bi bi-chat-dots mr-1 cursor-pointer like_comment"></i>
                         <span>
                         {commentsCount}
                             {commentsCount > 1 ? " Comments" : " Comment"}
@@ -261,13 +285,39 @@ const PhotoItem = ({photo, setPhotos}) => {
                             disabled={isLoading}
                             type="submit"
                         >
-                            <i className="bi bi-send-arrow-up-fill"></i>
+                            <div className="d-flex align-items-center justify-content-between">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                <i className="bi bi-send-arrow-up-fill"></i>
+                            </div>
                         </Button>
                     </form>
                 </div>
 
 
             </div>
+
+            {
+                deleteModalOpen &&
+                <DeleteModal
+                    handleDelete={handleDeletePhoto}
+                    modalOpen={deleteModalOpen}
+                    setModalOpen={setDeleteModalOpen}
+                    itemName={deletePhoto.caption}
+                    loader={deletePhotoLoader}
+                    item="photo"
+                />
+            }
+            {
+                commentDeleteModalOpen &&
+                <CommentDeleteModal
+                    loader={deleteCommentLoader}
+                    modalOpen={commentDeleteModalOpen}
+                    setModalOpen={setCommentDeleteModalOpen}
+                    itemName={deleteComment.content}
+                    handleDelete={handleDeleteComment}
+                />
+            }
+
             {
                 commentEditModalOpen &&
                 <CommentEditModal

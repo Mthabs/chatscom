@@ -10,11 +10,13 @@ import {useAuth} from "../../Contexts/AuthContext";
 import {useHistory} from "react-router-dom";
 import {setSession} from "../../lib/utils";
 import {Helmet} from "react-helmet";
+import CardLoader from "../../components/loader/card-loader";
 
 const Profile = () => {
     const [user] = useState(localStorage.getItem("user") ? JSON.parse(localStorage.getItem('user')) : null)
     const [followers, setFollowers] = useState([])
     const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState([])
     const history = useHistory();
     const {setIsAuthenticated, setUser} = useAuth()
@@ -48,13 +50,14 @@ const Profile = () => {
         }
     }
 
-
     const getFollowers = async () => {
         try {
             let response = await AxiosServices.get(`/followers/`)
             setFollowers(response.data.results)
+            setLoading(false)
         } catch (e) {
             console.log(e)
+            setLoading(false)
         }
     }
 
@@ -94,7 +97,7 @@ const Profile = () => {
                             )}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="first_name">First Name</label>
+                            <label htmlFor="first_name" className="">First Name</label>
                             <input
                                 name="first_name"
                                 className="form-control"
@@ -120,22 +123,35 @@ const Profile = () => {
                             )}
                         </div>
                         <div className="">
-                            <button type="submit" className="btn btn-primary btn-block">Update</button>
+                            <button type="submit" className="btn btn-primary btn-block">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                Update Profile
+                            </button>
                         </div>
 
                     </form>
                 </div>
                 <div className="shadow-sm border border-info rounded-lg p-4">
+                    <h4 className="mb-4">Follwers</h4>
                     <div className="row">
                         {
-                            followers?.length > 0 ?
-                                followers.map(follower => (
-                                    <div className="col-sm-6 col-lg-4">
-                                        <FollowerItem key={follower.id} follower={follower}/>
-                                    </div>
-                                ))
-                                :
-                                <p className="mt-10 font-weight-lighter text-center">No data found</p>
+                            loading ?
+                                <div className="row">
+                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(data => (
+                                        <div className="col-sm-6 col-lg-3" key={data}>
+                                            <CardLoader/>
+                                        </div>
+                                    ))}
+                                </div> :
+
+                                followers?.length > 0 ?
+                                    followers.map(follower => (
+                                        <div className="col-sm-6 col-lg-4">
+                                            <FollowerItem key={follower.id} follower={follower}/>
+                                        </div>
+                                    ))
+                                    :
+                                    <p className="mt-10 font-weight-bold text-center w-100">No data found</p>
                         }
                     </div>
                 </div>

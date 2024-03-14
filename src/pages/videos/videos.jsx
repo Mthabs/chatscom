@@ -7,12 +7,12 @@ import {useForm} from "react-hook-form";
 import {toast} from "react-toastify";
 import VideoItem from "../../components/video/video-item";
 import {Helmet} from "react-helmet";
+import CardLoader from "../../components/loader/card-loader";
 
 const Videos = () => {
     const [videos, setVideos] = useState([])
-    const [image, setImage] = useState(null)
-    const [fileName, setFileName] = useState("")
     const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const form = useForm({
         resolver: zodResolver(videoCreateSchema),
@@ -31,13 +31,10 @@ const Videos = () => {
         if (data.video_file) {
             formData.append('video_file', data.video_file[0]);
         }
-        console.log(formData)
         try {
             let response = await AxiosServices.post('/videos/', formData, true)
-            console.log(response.data)
+            // console.log(response.data)
             setIsLoading(false)
-            setImage("")
-            setFileName("")
             form.reset()
             toast.success('Video created successfully!')
             setVideos(videos => [response.data, ...videos])
@@ -50,10 +47,11 @@ const Videos = () => {
     const getVideos = async () => {
         try {
             let response = await AxiosServices.get('/videos/')
-            // console.log(response.data)
             setVideos(response.data.results)
+            setLoading(false)
         } catch (error) {
             console.log(error)
+            setLoading(false)
         }
     }
     useEffect(() => {
@@ -67,6 +65,7 @@ const Videos = () => {
             </Helmet>
             <div className="contentbox">
                 <div className="border p-3 mb-3 rounded">
+                    <h4 className="mb-2">Create a video</h4>
                     <form
                         onSubmit={form.handleSubmit(onsubmit)}
                     >
@@ -102,11 +101,8 @@ const Videos = () => {
                                 name="video_file"
                                 type="file"
                                 accept="video/mp4,video/x-m4v,video/*"
-                                className="form-control-file"
+                                className="form-control"
                                 id="fileUpload"
-                                onChange={e => {
-                                    setImage(e.target.files[0])
-                                }}
                                 {...form.register("video_file")}
                             />
                             {form.formState.errors?.video_file && (
@@ -114,14 +110,30 @@ const Videos = () => {
                             )}
                         </div>
                         <div className="d-flex justify-content-end">
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <button type="submit" className="btn btn-primary">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                {isLoading ? "Creating" : "Create"}
+                            </button>
                         </div>
                     </form>
                 </div>
                 {
-                    videos.map(video => (
-                        <VideoItem video={video} key={video.id} setVideos={setVideos}/>
-                    ))
+                    loading ?
+                        <>
+                            <CardLoader/>
+                            <CardLoader/>
+                            <CardLoader/>
+                            <CardLoader/>
+                        </>
+                        :
+                        videos.length > 0 ?
+                            videos.map(video => (
+                                <VideoItem video={video} key={video.id} setVideos={setVideos}/>
+                            ))
+                            :
+                            <div className="border p-3 mb-3 rounded contentbox">
+                                <p className="mt-10 font-weight-bold text-center">No data found</p>
+                            </div>
                 }
             </div>
         </Layout>

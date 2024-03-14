@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Container, Row, Col, Dropdown, Button, Form, Image, FormGroup} from 'react-bootstrap';
+import {Container, Row, Col, Dropdown, Button, Image, FormGroup} from 'react-bootstrap';
 import AxiosServices from "../../Config/AxiosServices";
 import {commentSchema} from "../../lib/validations/post";
 import {useForm} from "react-hook-form";
@@ -7,14 +7,25 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {toast} from "react-toastify";
 import CommentEditModal from "./comment-edit-modal";
 import PostEditModal from "./post-edit-modal";
+import DeleteModal from "../modal/delete-modal";
+import CommentDeleteModal from "../modal/comment-delete-modal";
+import Avatar from "../../assets/avatar.jpg"
 
 const SinglePost = ({post, setPosts}) => {
     const [comments, setComments] = useState([])
     const [modalOpen, setModalOpen] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deletePostLoader, setDeletePostLoader] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [commentsCount, setCommentsCount] = useState(0)
+
     const [commentEditModalOpen, setCommentEditModalOpen] = useState(false);
     const [comment, setComment] = useState({})
+    const [deletePost, setDeletePost] = useState(null)
+
+    const [commentDeleteModalOpen, setCommentDeleteModalOpen] = useState(false);
+    const [deleteCommentLoader, setDeleteCommentLoader] = useState(false)
+    const [deleteComment, setDeleteComment] = useState(null)
 
 
     const form = useForm({
@@ -42,24 +53,34 @@ const SinglePost = ({post, setPosts}) => {
         }
     }
 
-    const handleDeletePost = async (post) => {
+    const handleDeletePost = async () => {
+        setDeletePostLoader(true)
         try {
-            await AxiosServices.remove(`/posts/${post?.id}`)
-            setPosts(prev => prev.filter(prevPost => prevPost.id !== post?.id));
+            await AxiosServices.remove(`/posts/${deletePost?.id}`)
+            setPosts(prev => prev.filter(prevPost => prevPost.id !== deletePost?.id));
             toast.success('Post deleted successfully!')
+            setDeletePostLoader(false)
+            setDeletePost(null)
+            setDeleteModalOpen(false)
         } catch (e) {
             console.log(e)
+            setDeletePostLoader(false)
         }
     }
 
-    const handleDeleteComment = async (comment) => {
+    const handleDeleteComment = async () => {
+        setDeleteCommentLoader(true)
         try {
-            await AxiosServices.remove(`/comments/${comment?.id}`)
-            setComments(prev => prev.filter(prevComment => prevComment.id !== comment?.id));
+            await AxiosServices.remove(`/comments/${deleteComment?.id}`)
+            setComments(prev => prev.filter(prevComment => prevComment.id !== deleteComment?.id));
             setCommentsCount(prevCommentsCount => prevCommentsCount - 1)
             toast('Post comment delete successfully!')
+            setDeleteCommentLoader(false)
+            setCommentDeleteModalOpen(false)
+            setDeleteComment(null)
         } catch (e) {
             console.log(e)
+            setDeleteCommentLoader(false)
         }
     }
 
@@ -78,7 +99,7 @@ const SinglePost = ({post, setPosts}) => {
 
     async function handleUnLikePost() {
         try {
-            let response = await AxiosServices.remove(`/likes/${post.like_id}`)
+            await AxiosServices.remove(`/likes/${post.like_id}`)
             setPosts(posts => posts.map(prevPost => prevPost.id === post.id ? {
                 ...prevPost,
                 like_count: prevPost?.like_count - 1,
@@ -110,7 +131,8 @@ const SinglePost = ({post, setPosts}) => {
                 <Row className="justify-content-between mb-4">
                     <Col xs="auto" className="d-flex align-items-center">
                         <Image
-                            src={post?.profile_picture || "https://placekitten.com/40/40"}
+                            // src={post?.profile_picture || "https://placekitten.com/40/40"}
+                            src={Avatar}
                             roundedCircle
                             className="mr-2"
                             alt="User Avatar"
@@ -138,7 +160,10 @@ const SinglePost = ({post, setPosts}) => {
                                 </Dropdown.Item>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item
-                                    onClick={() => handleDeletePost(post)}
+                                    onClick={() => {
+                                        setDeletePost(post)
+                                        setDeleteModalOpen(true)
+                                    }}
                                 >
                                     <i
                                         className="bi bi-trash mr-1"
@@ -191,7 +216,10 @@ const SinglePost = ({post, setPosts}) => {
                                                         </Dropdown.Item>
                                                         <Dropdown.Divider/>
                                                         <Dropdown.Item
-                                                            onClick={() => handleDeleteComment(comment)}
+                                                            onClick={() => {
+                                                                setCommentDeleteModalOpen(true)
+                                                                setDeleteComment(comment)
+                                                            }}
                                                         >
                                                             <i
                                                                 className="bi bi-trash mr-1"
@@ -215,11 +243,11 @@ const SinglePost = ({post, setPosts}) => {
                         {
                             post.like_id ?
                                 <i
-                                    className="bi bi-hand-thumbs-up-fill mr-1 cursor-pointer"
+                                    className="bi bi-hand-thumbs-up-fill mr-1 cursor-pointer like_comment"
                                     onClick={handleUnLikePost}
                                 /> :
                                 <i
-                                    className="bi bi-hand-thumbs-up mr-1 cursor-pointer"
+                                    className="bi bi-hand-thumbs-up mr-1 cursor-pointer like_comment"
                                     onClick={handleLikePost}
                                 />
                         }
@@ -229,7 +257,7 @@ const SinglePost = ({post, setPosts}) => {
                         </span>
                     </Col>
                     <Col xs="auto" className="d-flex align-items-center">
-                        <i className="bi bi-chat-dots mr-1 cursor-pointer"></i>
+                        <i className="bi bi-chat-dots mr-1 cursor-pointer like_comment"></i>
                         <span>
                         {commentsCount}
                             {commentsCount > 1 ? " Comments" : " Comment"}
@@ -261,12 +289,38 @@ const SinglePost = ({post, setPosts}) => {
                             disabled={isLoading}
                             type="submit"
                         >
-                            <i className="bi bi-send-arrow-up-fill"></i>
+                            <div className="d-flex align-items-center justify-content-between">
+                                {isLoading && <i className="fa fa-circle-o-notch fa-spin fa-fw mr-1"/>}
+                                <i className="bi bi-send-arrow-up-fill"></i>
+                            </div>
                         </Button>
                     </form>
                 </div>
 
             </Container>
+
+            {
+                deleteModalOpen &&
+                <DeleteModal
+                    modalOpen={deleteModalOpen}
+                    setModalOpen={setDeleteModalOpen}
+                    loader={deletePostLoader}
+                    handleDelete={handleDeletePost}
+                    itemName={deletePost.content}
+                    item="post"
+                />
+            }
+
+            {
+                commentDeleteModalOpen &&
+                <CommentDeleteModal
+                    loader={deleteCommentLoader}
+                    modalOpen={commentDeleteModalOpen}
+                    setModalOpen={setCommentDeleteModalOpen}
+                    itemName={deleteComment.content}
+                    handleDelete={handleDeleteComment}
+                />
+            }
 
             {
                 commentEditModalOpen &&

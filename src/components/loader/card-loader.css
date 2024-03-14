@@ -1,0 +1,38 @@
+.loading-skeleton {
+    color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #eee;
+    border-color: #eee;
+}
+
+.loading-skeleton {
+    pointer-events: none;
+    animation: loading-skeleton 1s infinite alternate;
+}
+
+.loading-skeleton .image {
+    color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #eee;
+    border-color: #eee;
+    height: 200px;
+}
+
+.loading-skeleton h5, .loading-skeleton p {
+    color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #eee;
+    border-color: #eee;
+}
+
+@keyframes loading-skeleton {
+    from {
+        opacity: .4;
+    }
+    to {
+        opacity: 1;
+    }
+}
