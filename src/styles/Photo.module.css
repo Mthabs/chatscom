@@ -1,0 +1,24 @@
+.Photo {
+    background-color: #ffffff;
+    border: 1px solid #dadadf;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  .Photo figure,
+  h5 {
+    margin: 0 0;
+  }
+  
+  .Heart {
+    color: purple;
+  }
+  
+  .Heart:hover {
+    color: purple;
+  }
+  
+  .HeartOutline:hover {
+    color: purple;
+  }
