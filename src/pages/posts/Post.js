@@ -1,136 +1,135 @@
-import React from "react";
+import { Card } from "react-bootstrap"
 import styles from "../../styles/Post.module.css";
-import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import { Card, Media, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { customaxios } from "../../api/axiosDefaults";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Avatar from "../../components/Avatar";
-import { axiosRes } from "../../api/axiosDefaults";
 import { MoreDropdown } from "../../components/MoreDropdown";
+import FormLayout from "./Form/FormLayout";
+
+// import Card from 'react-bootstrap/Card';
 
 const Post = (props) => {
-  const {
-    id,
-    owner,
-    profile_id,
-    profile_image,
-    comments_count,
-    likes_count,
-    like_id,
-    title,
-    content,
-    image,
-    updated_at,
-    postPage,
-    setPosts,
-  } = props;
+    const navigate = useHistory()
+    const {id, user, content, image, video, created_at, likes_count, comments_count } = props
+    const [like, setLike] = useState(false)
+    const [editForm, setEditForm] = useState(false);
+    const [options, setOptions] = useState(false);
+    const currentUser = JSON.parse(sessionStorage.getItem("user"))
 
-  const currentUser = useCurrentUser();
-  const is_owner = currentUser?.username === owner;
-  const history = useHistory();
+    useEffect(()=>{
+        if(currentUser.id === user.id){
+            setOptions(true);
+        }
+        initialLike()
+    },[id])
 
-  const handleEdit = () => {
-    history.push(`/posts/${id}/edit`);
-  };
-
-  const handleDelete = async () => {
-    try {
-      await axiosRes.delete(`/posts/${id}/`);
-      history.goBack();
-    } catch (err) {
-      console.log(err);
+    const initialLike = async() => {
+        // Create Initial Like api and Integrate here: gets user like this post from api
+        try{
+            const response = await customaxios.get("/post/like/"+id+"/")
+            if(response.status === 200){
+                setLike(response.data.like);
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+        
     }
-  };
 
-  const handleLike = async () => {
-    try {
-      const { data } = await axiosRes.post("/likes/", { post: id });
-      setPosts((prevPosts) => ({
-        ...prevPosts,
-        results: prevPosts.results.map((post) => {
-          return post.id === id
-            ? { ...post, likes_count: post.likes_count + 1, like_id: data.id }
-            : post;
-        }),
-      }));
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const handleLike = async (value) => {
+        setLike(value)
+        try{
+            if(value){
+                 await customaxios.post("/post/like/"+id+"/")
+                 document.location.reload()
+            }
+            else{
+                 await customaxios.delete("/post/like/"+id+"/")
+                 document.location.reload()
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+     }
 
-  const handleUnlike = async () => {
-    try {
-      await axiosRes.delete(`/likes/${like_id}/`);
-      setPosts((prevPosts) => ({
-        ...prevPosts,
-        results: prevPosts.results.map((post) => {
-          return post.id === id
-            ? { ...post, likes_count: post.likes_count - 1, like_id: null }
-            : post;
-        }),
-      }));
-    } catch (err) {
-      console.log(err);
-    }
-  };
+     const handleDelete = async () =>{
+        const response = await customaxios.delete("/post/"+id+"/")
+        if(response.status === 204){
+            alert("Post deleted successfully !!")
+            navigate.push("/")
+            window.location.reload()
+        }
+     }
 
-  return (
-    <Card className={styles.Post}>
-      <Card.Body>
-        <Media className="align-items-center justify-content-between">
-          <Link to={`/profiles/${profile_id}`}>
-            <Avatar src={profile_image} height={55} />
-            {owner}
-          </Link>
-          <div className="d-flex align-items-center">
-            <span>{updated_at}</span>
-            {is_owner && postPage && (
-              <MoreDropdown
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
-              />
-            )}
-          </div>
-        </Media>
-      </Card.Body>
-      <Link to={`/posts/${id}`}>
-        <Card.Img src={image} alt={title} />
-      </Link>
-      <Card.Body>
-        {title && <Card.Title className="text-center">{title}</Card.Title>}
-        {content && <Card.Text>{content}</Card.Text>}
-        <div className={styles.PostBar}>
-          {is_owner ? (
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip>You can't like your own post!</Tooltip>}
-            >
-              <i className="far fa-heart" />
-            </OverlayTrigger>
-          ) : like_id ? (
-            <span onClick={handleUnlike}>
-              <i className={`fas fa-heart ${styles.Heart}`} />
-            </span>
-          ) : currentUser ? (
-            <span onClick={handleLike}>
-              <i className={`far fa-heart ${styles.HeartOutline}`} />
-            </span>
-          ) : (
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip>Log in to like posts!</Tooltip>}
-            >
-              <i className="far fa-heart" />
-            </OverlayTrigger>
-          )}
-          {likes_count}
-          <Link to={`/posts/${id}`}>
-            <i className="far fa-comments" />
-          </Link>
-          {comments_count}
-        </div>
-      </Card.Body>
-    </Card>
-  );
-};
+     const detailPostView = () =>{
+        navigate.push("/post/"+id)
+        document.location.reload()
+     }
+
+     const handleUpdate = async(values)=>{
+        const formData = new FormData ();
+        formData.append('content', values.content)
+        if(typeof(values.image) === 'object' &&  values.image !== null){
+            formData.append('image', values.image)
+        }
+        if(typeof(values.video) === 'object' &&  values.video != null){
+            formData.append('video', values.video)
+        }
+        const response = await customaxios.patch("/post/"+id+"/", formData)
+        if (response.status === 206){
+            alert("Successfully Updated")
+            window.location.reload()
+        }
+     }
+    return(
+            <Card >
+                <Card.Body>
+                    <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between">
+                            <a href={"/profile/"+user.id} >
+                                <span className="mx-2"> 
+                                    {user.profile_picture && <Avatar src={user.profile_picture}  text={user.full_name} />}
+                                    {!user.profile_picture && <Avatar src="https://res.cloudinary.com/dnt7oro5y/image/upload/v1/media/../default_profile_qdjgyp" text={user.full_name} />}
+                                </span>
+                            </a>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            { options&& !editForm && (
+                                <MoreDropdown
+                                    handleEdit={() => setEditForm(true)}
+                                    handleDelete={handleDelete}
+                                />
+                                )}
+                        </div>
+
+                    </div>
+                </Card.Body>
+                {!editForm && image && <Card.Img src={image} alt="Image Post"/>}
+                   {!editForm && !image && video &&<Card.Body>
+                        <video className="d-block w-100" controls>
+                            <source src={video} type="video/mp4" />
+                            Your browser does not support the video tag.
+                         </video>                       
+                    </Card.Body>}
+                    {editForm && <FormLayout onSubmit={handleUpdate} data={props} />}
+                    
+                <Card.Body>
+                    <div className="d-flex justify-content-start">
+                        {like && <i className={`fas fa-heart ${styles.Heart}`} onClick={()=>{handleLike(false)}}/>}
+                        {!like && <i className="far fa-heart" onClick={()=>{handleLike(true)}}/> }
+                       <span className="pt-2">{likes_count}</span>
+                        <i className="far fa-comments" onClick={()=>{detailPostView()}} />
+                        <span className="pt-2">{comments_count}</span>
+                    </div>
+                    <div><span><strong style={{color:"purple"}}>{user.full_name}: {' '}</strong>{content}</span></div>
+                    <span className="mt-3"><small>{created_at}</small></span>
+                </Card.Body>               
+            </Card>
+
+    )
+}
 
 export default Post;
