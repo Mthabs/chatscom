@@ -1,72 +1,49 @@
-import React, { useState } from "react";
+import { reduxForm, Form, change } from "redux-form"
+import { Field } from "redux-form";
+import { renderTextAreaField } from "../../components/fields";
+import { Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 
-import Form from "react-bootstrap/Form";
-import { axiosRes } from "../../api/axiosDefaults";
+import btnStyles from "../../styles/Button.module.css";
+import { useEffect } from "react";
 
-import styles from "../../styles/CommentCreateEditForm.module.css";
 
-function CommentEditForm(props) {
-  const { id, content, setShowEditForm, setComments } = props;
 
-  const [formContent, setFormContent] = useState(content);
+const CommentForm = (props) => {
+  // Props
+    const { handleSubmit, pristine, submitting, message, hideEditForm } = props;
+    // Dispatch 
+    const dispatch = useDispatch()
+    // UseEffect function to load form field
+    useEffect(()=>{
+        if(message){ 
+          dispatch(change("commentForm", "comment", message))
+        }
+    },[message])
 
-  const handleChange = (event) => {
-    setFormContent(event.target.value);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      await axiosRes.put(`/comments/${id}/`, {
-        content: formContent.trim(),
-      });
-      setComments((prevComments) => ({
-        ...prevComments,
-        results: prevComments.results.map((comment) => {
-          return comment.id === id
-            ? {
-                ...comment,
-                content: formContent.trim(),
-                updated_at: "now",
-              }
-            : comment;
-        }),
-      }));
-      setShowEditForm(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group className="pr-1">
-        <Form.Control
-          className={styles.Form}
-          as="textarea"
-          value={formContent}
-          onChange={handleChange}
-          rows={2}
-        />
-      </Form.Group>
-      <div className="text-right">
-        <button
-          className={styles.Button}
-          onClick={() => setShowEditForm(false)}
-          type="button"
-        >
-          cancel
-        </button>
-        <button
-          className={styles.Button}
-          disabled={!content.trim()}
-          type="submit"
-        >
-          save
-        </button>
-      </div>
-    </Form>
-  );
+    return(
+        <Form onSubmit={handleSubmit}>
+            <Field name = {message ? "comment" : "content"} placeholder="Leave Your Comment here" component={renderTextAreaField} />
+            <Button
+            className={`${btnStyles.Button} ${btnStyles.Bright} mt-3`}
+            type="Submit"
+            disabled={pristine || submitting}
+            >
+            {!message && "Comment"}
+            {message && "Save Comment"}
+            </Button>  
+            {message && <Button
+              className={`${btnStyles.Button} btn btn-light  mt-3`}
+              type="Button"
+              onClick={()=>hideEditForm}
+              >
+              Cancel
+            </Button>}
+        </Form>
+    )
 }
-
-export default CommentEditForm;
+export default reduxForm({
+form:"commentForm",
+destroyOnUnmount:true,
+forceUnregisterOnUnmount:true,
+})(CommentForm);
