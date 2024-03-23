@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { SubmissionError } from "redux-form";
 import FormLayout from "./FormLayout";
-
+import logo from "../../../assets/logo.png";
 import styles from "../../../styles/SignInUpForm.module.css";
 import appStyles from "../../../App.module.css";
 
@@ -94,13 +94,10 @@ const SignUpForm = (props) => {
     <Row className={styles.Row}>
       <Col className="py-2 p-md-2" md={6}>
 
-      <Container className={`mt-3 ${appStyles.Content}`}>
-          <Link className={styles.Link} to="" onClick={()=>{handleClick("/signin")}}>
-            Already have an account? <span>Sign in</span>
-          </Link>
-        </Container>
-
         <Container className={`${appStyles.Content} p-4 `}>
+          <div className="d-flex justify-content-center my-4">
+            <img src={logo} alt="Logo." />
+          </div>
           {!loading && <>
            <h1 className={styles.Header}>sign up</h1>
           <FormLayout onSubmit={handleSubmit} />
@@ -111,14 +108,19 @@ const SignUpForm = (props) => {
             </div>
           }
         </Container>
+
+        <Container className={`mt-3 ${appStyles.Content}`}>
+          <Link className={styles.Link} to="" onClick={()=>{handleClick("/signin")}}>
+            Already have an account? <span>Sign in</span>
+          </Link>
+        </Container>
+
       </Col>
-      <Col
-        md={5}
-        className={`my-auto  p-2  mx-4 `}
-      >
+      <Col md={5} className={`p-2  mx-4 `} >
         <Image
           className={`${appStyles.FillerImage}`}
           src={"https://images.unsplash.com/photo-1664712215116-178eb5800acb?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+          style={{height:"720px"}}
         />
       </Col>
     </Row>
