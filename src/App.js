@@ -18,6 +18,10 @@ function App() {
           <Route exact path="/signup" render={() => <SignUpForm />} />
           <Route exact path="/" render={() => <PostCreation />} />
           <Route exact path="/post/:id" render={() => <PostPage />} />
+          <Route exact path="/profile/:id" render={() => <Profile />} />
+          <Route exact path="/profiles/:id/edit/password" render={() => <UserPasswordForm />} />
+          <Route exact path="/profiles/:id/edit" render={() => <ProfileEdit />} /> 
+          <Route path="/friends" render={() => <Friends />} />
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
       </Container>
