@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import FormLayout from "./FormLayout";
 import { Link, useHistory } from "react-router-dom";
 import { SubmissionError } from "redux-form";
+import logo from "../../../assets/logo.png";
 import { customaxios } from "../../../api/axiosDefaults";
 import styles from "../../../styles/SignInUpForm.module.css";
 import appStyles from "../../../App.module.css";
@@ -52,6 +53,9 @@ function SignInForm() {
     <Row className={styles.Row}>
       <Col className="my-auto p-0 p-md-2" md={6}>
         <Container className={`${appStyles.Content} p-4 `}>
+          <div className="d-flex justify-content-center my-4">
+          <img src={logo} alt="Logo." />
+          </div>
         {!loading && <>
           <h1 className={styles.Header}>sign in</h1>
           <FormLayout onSubmit={handleSubmit}/>
