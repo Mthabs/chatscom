@@ -5,6 +5,13 @@ import { Route, Switch } from "react-router-dom";
 import "./api/axiosDefaults";
 import SignUpForm from "./pages/auth/register/Register";
 import SignInForm from "./pages/auth/login/login";
+import PostCreation from "./pages/posts/Form/BaseLayout"
+import PostPage from "./pages/posts/PostPage";
+import Profile from "./pages/profiles/BaseLayout"
+
+import UserPasswordForm from "./pages/profiles/UserPasswordForm";
+import ProfileEdit from "./pages/profiles/form/BaseLayout";
+import Friends from './pages/friends/Friends';
 
 
 
