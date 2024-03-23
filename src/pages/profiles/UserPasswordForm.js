@@ -8,8 +8,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 
 import { useHistory, useParams } from "react-router-dom";
-import { axiosRes } from "../../api/axiosDefaults";
-import { useCurrentUser } from "../../contexts/CurrentUserContext";
+import { customaxios } from "../../api/axiosDefaults";
 
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
@@ -17,7 +16,6 @@ import appStyles from "../../App.module.css";
 const UserPasswordForm = () => {
   const history = useHistory();
   const { id } = useParams();
-  const currentUser = useCurrentUser();
 
   const [userData, setUserData] = useState({
     new_password1: "",
@@ -34,18 +32,18 @@ const UserPasswordForm = () => {
     });
   };
 
-  useEffect(() => {
-    if (currentUser?.profile_id?.toString() !== id) {
-      // redirect user if they are not the owner of this profile
-      history.push("/");
-    }
-  }, [currentUser, history, id]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axiosRes.post("/dj-rest-auth/password/change/", userData);
-      history.goBack();
+      if(new_password1 !== new_password2){
+        setErrors("Passwords Doesn't Match")
+      }
+      else{
+        const response = await customaxios.patch("/auth/password/change/", userData);
+        alert(response.data.message)
+        history.goBack();
+        window.location.reload()
+      }
     } catch (err) {
       console.log(err);
       setErrors(err.response?.data);

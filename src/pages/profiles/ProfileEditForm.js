@@ -9,49 +9,40 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 
-import { axiosReq } from "../../api/axiosDefaults";
-import {
-  useCurrentUser,
-  useSetCurrentUser,
-} from "../../contexts/CurrentUserContext";
-
+import { customaxios } from "../../api/axiosDefaults";
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
 
+
 const ProfileEditForm = () => {
-  const currentUser = useCurrentUser();
-  const setCurrentUser = useSetCurrentUser();
   const { id } = useParams();
   const history = useHistory();
   const imageFile = useRef();
+  const user = JSON.parse(sessionStorage.getItem('user'))
 
   const [profileData, setProfileData] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     content: "",
-    image: "",
+    profile_picture: "",
   });
-  const { name, content, image } = profileData;
+  const { first_name, last_name, status, profile_picture } = profileData;
 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const handleMount = async () => {
-      if (currentUser?.profile_id?.toString() === id) {
         try {
-          const { data } = await axiosReq.get(`/profiles/${id}/`);
-          const { name, content, image } = data;
-          setProfileData({ name, content, image });
+          const { data } = await customaxios.get(`/profile/edit/${id}/`);
+          const { first_name, last_name, status, profile_picture } = data;
+          setProfileData({ first_name, last_name, status, profile_picture });
         } catch (err) {
           console.log(err);
           history.push("/");
         }
-      } else {
-        history.push("/");
-      }
-    };
-
+      } 
     handleMount();
-  }, [currentUser, history, id]);
+  }, [history, id]);
 
   const handleChange = (event) => {
     setProfileData({
@@ -63,20 +54,18 @@ const ProfileEditForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("content", content);
+    formData.append("first_name", first_name);
+    formData.append("last_name", last_name);
+    formData.append("status", status);
 
     if (imageFile?.current?.files[0]) {
-      formData.append("image", imageFile?.current?.files[0]);
+      formData.append("profile_picture", imageFile?.current?.files[0]);
     }
 
     try {
-      const { data } = await axiosReq.put(`/profiles/${id}/`, formData);
-      setCurrentUser((currentUser) => ({
-        ...currentUser,
-        profile_image: data.image,
-      }));
+      const { data } = await customaxios.patch(`/profiles/edit/${id}/`, formData);
       history.goBack();
+      window.location.reload()
     } catch (err) {
       console.log(err);
       setErrors(err.response?.data);
@@ -86,12 +75,28 @@ const ProfileEditForm = () => {
   const textFields = (
     <>
       <Form.Group>
+      <Form.Label>First name</Form.Label>
+        <Form.Control
+          as="textarea"
+          value={first_name}
+          onChange={handleChange}
+          name="first_name"
+          rows={7}
+        />
+         <Form.Label>Bio</Form.Label>
+        <Form.Control
+          as="textarea"
+          value={first_name}
+          onChange={handleChange}
+          name="first_name"
+          rows={7}
+        />
         <Form.Label>Bio</Form.Label>
         <Form.Control
           as="textarea"
-          value={content}
+          value={status}
           onChange={handleChange}
-          name="content"
+          name="status"
           rows={7}
         />
       </Form.Group>
@@ -119,12 +124,12 @@ const ProfileEditForm = () => {
         <Col className="py-2 p-0 p-md-2 text-center" md={7} lg={6}>
           <Container className={appStyles.Content}>
             <Form.Group>
-              {image && (
+              {profile_picture && (
                 <figure>
-                  <Image src={image} fluid />
+                  <Image src={profile_picture} fluid />
                 </figure>
               )}
-              {errors?.image?.map((message, idx) => (
+              {errors?.profile_picture?.map((message, idx) => (
                 <Alert variant="warning" key={idx}>
                   {message}
                 </Alert>
@@ -145,7 +150,7 @@ const ProfileEditForm = () => {
                   if (e.target.files.length) {
                     setProfileData({
                       ...profileData,
-                      image: URL.createObjectURL(e.target.files[0]),
+                      profile_picture: URL.createObjectURL(e.target.files[0]),
                     });
                   }
                 }}
