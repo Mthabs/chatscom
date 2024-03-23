@@ -171,6 +171,7 @@ const Profile = () => {
             <hr />
               <div className="d-flex justify-content-center">
                 {profile.status}
+                {!profile.status && <span>No Status</span>}
               </div>
             <hr />
             {posts && posts.map((post)=>{
@@ -182,6 +183,9 @@ const Profile = () => {
                     </div>
                       )
                     })}
+            {posts.length === 0 && <div className="d-flex justify-content-center">
+                <span>No Post added</span>
+                </div>}
         </div>}
         </>
     )
