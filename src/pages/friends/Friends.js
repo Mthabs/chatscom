@@ -72,7 +72,7 @@ const Friends = () => {
 
   return (
     <>
-    {auth &&<Container>
+    {auth &&<Container style={{maxWidth: "60vw"}}>
       <h2>Friends</h2>
 
       {/* Navigation Links */}
