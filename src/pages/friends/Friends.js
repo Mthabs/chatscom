@@ -70,6 +70,7 @@ const Friends = () => {
     }
   };
 
+
   return (
     <>
     {auth &&<Container style={{maxWidth: "60vw"}}>
@@ -104,8 +105,8 @@ const Friends = () => {
         </Nav.Item>
       </Nav>
 
-    {activeKey === "Followers" && <UserList data={data} underFlowMessage="No followers of your Profile" />}
-    {activeKey === "Following" && <UserList data={data} underFlowMessage="No following of your Profile" />}
+    {activeKey === "Followers" && <UserList data={data} underFlowMessage="No followers of your Profile"  reject={true} />}
+    {activeKey === "Following" && <UserList data={data} underFlowMessage="No following of your Profile"  reject={true} />}
      {activeKey === "friendrequest" && <FriendRequests />}
      {activeKey === "findfriends" && <FindFriends />}
     </Container>}

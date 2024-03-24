@@ -18,9 +18,18 @@ const FriendRequests = () => {
   fetchUsers();
   }, []);
 
+  const acceptRequest = async (followId) => {
+    try {
+      const response = await customaxios.post('friends/following/accept/'+followId+'/');
+      document.location.reload()
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  }
+
   return (
     <div className='my-2'>   
-       <UserList data={data} underFlowMessage={"No Friend Requests"} />
+       <UserList data={data} underFlowMessage={"No Friend Requests"} reject={true} accept={true} handleAccept={acceptRequest}/>
     </div>
   );
 };
