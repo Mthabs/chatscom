@@ -6,13 +6,14 @@ const UserList = ({data, underFlowMessage}) => {
     return(
         <>
         <ListGroup variant="flush">
-        { data.map((user)=>{
+        { data.map((relation)=>{
+          const {id, profile_picture, full_name} = relation.user
           return(
             <ListGroup.Item>
               <div className='d-flex'>
-                {!user.profile_picture && <img src='https://res.cloudinary.com/dnt7oro5y/image/upload/v1/default_profile_qdjgyp'  className={styles.Avatar}  alt="Profile Picture" style={{ width: '50px', height: '50px', marginRight: '10px' }}  /> }
-                {user.profile_picture && <img src={user.profile_picture} alt="Profile Picture" className={styles.Avatar} style={{ width: '50px', height: '50px', marginRight: '10px' }} /> }
-                <a href={'/profile/' + user.id} ><span className='mt-2'>{user.full_name}</span></a>
+                {!profile_picture && <img src='https://res.cloudinary.com/dnt7oro5y/image/upload/v1/default_profile_qdjgyp'  className={styles.Avatar}  alt="Profile Picture" style={{ width: '50px', height: '50px', marginRight: '10px' }}  /> }
+                {profile_picture && <img src={profile_picture} alt="Profile Picture" className={styles.Avatar} style={{ width: '50px', height: '50px', marginRight: '10px' }} /> }
+                <a href={'/profile/' + id} ><span className='mt-2'>{full_name}</span></a>
               </div>
             </ListGroup.Item>
           )
