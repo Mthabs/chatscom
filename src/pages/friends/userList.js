@@ -1,6 +1,5 @@
 import ListGroup from 'react-bootstrap/ListGroup';
 import styles from "../../styles/Avatar.module.css";
-import "../../styles/Cross.module.css"
 import { customaxios } from '../../api/axiosDefaults';
 
 
