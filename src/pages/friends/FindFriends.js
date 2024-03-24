@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { customaxios } from '../../api/axiosDefaults';
 import UserList from './userList';
 
 
@@ -10,7 +10,7 @@ const FindFriends = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/friends/search/', {
+        const response = await customaxios.get('/friends/search/', {
           params: { query: searchQuery },
         });
 
