@@ -45,18 +45,17 @@ const PostCreation = () => {
     }
   }
     const handleSubmit = async (values) => {
+      console.log(values)
         const user = JSON.parse(sessionStorage.getItem("user"));
         const formdata = new FormData();
-        if (values.content){
-            formdata.append("content", values.content)
-        }
+        formdata.append("content", values.status)
         if(values.video){
             formdata.append("video", values.video)
         }
         if(values.image){
             formdata.append("image", values.image)
         }
-            formdata.append("user", user.id)
+        formdata.append("user", user.id)
         try{
             const response = await customaxios.post('/post/', formdata);
             if( response.status === 201 ){
@@ -82,7 +81,7 @@ const PostCreation = () => {
         <Row>
             {auth && <Col className="d-flex justify-content-between" md={7} lg={8}>
                 <Container>
-                    <FormLayout onSubmit={handleSubmit}/>
+                    <FormLayout name="status" onSubmit={handleSubmit}/>
                     {posts && posts.map((post)=>{
                       return(
                         <Row className="my-4">

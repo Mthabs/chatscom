@@ -8,10 +8,10 @@ import { useDispatch } from "react-redux";
 import btnStyles from "../../../styles/Button.module.css";
 import { useEffect } from "react";
 
-const FormField = () => {
+const FormField = ({name}) => {
     return(
         <>
-        <Field name = "content" placeholder="What's on your mind?" component={renderTextAreaField} />
+        <Field name = {name} placeholder="What's on your mind?" component={renderTextAreaField} />
         <div className="d-flex">
         <Field name="image" component={renderFileField} image="/upload2.jpg" accept="image/*" label="Upload Image" />
         <Field name="video" component={renderFileField} image="/upload.jpg" accept="video/*" label="Upload Video" />
@@ -21,7 +21,7 @@ const FormField = () => {
 }
 
 const FormLayout = (props) => {
-    const { handleSubmit, pristine, submitting, data } = props;
+    const { handleSubmit, pristine, submitting, data, name="content" } = props;
     const dispatch = useDispatch()
     useEffect(()=>{
         if(data){
@@ -32,7 +32,7 @@ const FormLayout = (props) => {
     },[data])
     return(
         <Form onSubmit={handleSubmit}>
-            <FormField />
+            <FormField name={name} />
             <Button
             className={`${btnStyles.Button} ${btnStyles.Bright} mt-3`}
             type="Submit"
