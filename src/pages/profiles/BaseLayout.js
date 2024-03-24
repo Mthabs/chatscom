@@ -17,6 +17,7 @@ const Profile = () => {
     const [posts, setPosts] = useState([]);
     const [followId, setFollowId] = useState(null);
     const [isDifferent, setIsDifferent] = useState(true);
+    const [status, setStatus] = useState("")
 
     useEffect(()=>{
       let temp = JSON.parse(sessionStorage.getItem("loggedIn"));
@@ -43,6 +44,7 @@ const Profile = () => {
           getUserProfile();
         }
       },[auth])
+
 
       const  getUserProfile=async()=>{
         try{
@@ -84,9 +86,9 @@ const Profile = () => {
             const response = await customaxios.get('friends/check/'+id+"/")
       
             if(response.status ===200 ){
-              if(response.data.follow){
-                setFollowId(response.data.id)
-              }
+              setStatus(response.data.status)
+              setFollowId(response.data.id)
+              
             }
           }
           catch(e){
@@ -105,15 +107,18 @@ const Profile = () => {
             if(check){
                 const response = await customaxios.post("friends/following/add/"+id+"/")
                 if (response.status === 201){
+                    setStatus(response.data.status)
                     setFollowId(response.data.id)
                 }
             }
             else{
                 const response =await customaxios.delete("friends/following/remove/"+followId+"/")
                 if(response.status === 204){
+                    setStatus("")
                     setFollowId(null)
                 }
             }
+            document.location.reload()
         }
         catch(e){
             if(e.code === "ERR_NETWORK"){
@@ -165,7 +170,7 @@ const Profile = () => {
                 </div>
                 </div>
                 <div className="col pt-2">
-                {isDifferent && followId && <Button variant="danger" onClick={()=>{handleClick(false)}}>UnFollow</Button>}
+                {isDifferent && followId && <Button variant="danger" onClick={()=>{handleClick(false)}}>{status}</Button>}
                 {isDifferent && !followId && <Button variant="info" onClick={()=>{handleClick(true)}}>Follow</Button>}{' '}
                 </div>
             </div>
