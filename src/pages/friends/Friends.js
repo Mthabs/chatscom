@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Nav } from 'react-bootstrap';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { customaxios } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import FindFriends from './FindFriends';
 import FriendRequests from './FriendRequests'
-import styles from "../../styles/Avatar.module.css";
 import UserList from './userList';
 
 
@@ -95,7 +93,7 @@ const Friends = () => {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link disabled>
+          <Nav.Link eventKey="friendrequest">
             Friend Requests
           </Nav.Link>
         </Nav.Item>
