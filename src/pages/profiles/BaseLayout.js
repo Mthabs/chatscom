@@ -128,7 +128,7 @@ const Profile = () => {
     return (
         <>
         { profile && <Container className="" style={{maxWidth: "900px"}}>
-            <div className="col">
+            <div className="col d-flex justify-content-end">
              {!isDifferent && <ProfileEditDropdown id={id} />}
                 {/* <i class="fas fa-ellipsis-v" aria-hidden="true" /> */}
             </div>
