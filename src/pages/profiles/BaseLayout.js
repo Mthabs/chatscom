@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Post from "../posts/Post";
 import Avatar from "../../components/Avatar";
+import { Container } from "react-bootstrap";
 
 
 const Profile = () => {
@@ -126,8 +127,8 @@ const Profile = () => {
 
     return (
         <>
-        { profile && <div className="" style={{maxWidth: "900px"}}>
-            <div className="d-flex justify-content-start">
+        { profile && <Container className="" style={{maxWidth: "900px"}}>
+            <div className="col">
              {!isDifferent && <ProfileEditDropdown id={id} />}
                 {/* <i class="fas fa-ellipsis-v" aria-hidden="true" /> */}
             </div>
@@ -186,7 +187,7 @@ const Profile = () => {
             {posts.length === 0 && <div className="d-flex justify-content-center">
                 <span>No Post added</span>
                 </div>}
-        </div>}
+        </Container>}
         </>
     )
 }
