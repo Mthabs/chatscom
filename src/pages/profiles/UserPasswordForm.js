@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
@@ -15,7 +15,6 @@ import appStyles from "../../App.module.css";
 
 const UserPasswordForm = () => {
   const history = useHistory();
-  const { id } = useParams();
 
   const [userData, setUserData] = useState({
     new_password1: "",
