@@ -31,7 +31,7 @@ const FindFriends = () => {
       <h2>Find Friends</h2>
       <input
         type="text"
-        placeholder="Search for friends"
+        placeholder="Enter username, name, email"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         className='mb-2'
