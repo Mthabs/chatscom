@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// axios.defaults.baseURL = "https://chatcom-backend-8579ef0ee515.herokuapp.com/";
-axios.defaults.baseURL = "http://localhost:8000/";
+axios.defaults.baseURL = "https://chatcom-backend-8579ef0ee515.herokuapp.com/";
+// axios.defaults.baseURL = "http://localhost:8000/";
 axios.defaults.mode = "no-cors"
 axios.defaults.withCredentials = false
 axios.defaults.credentials ="include" 
