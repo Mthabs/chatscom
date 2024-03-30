@@ -1,9 +1,10 @@
-import { reduxForm, Form } from "redux-form"
+import { reduxForm, Form, change } from "redux-form"
+import {  useDispatch } from "react-redux";
 import { Field } from "redux-form";
 import { renderTextField, renderFileField, renderTextAreaField } from "../../../components/fields";
 import { Button } from "react-bootstrap";
-
 import btnStyles from "../../../styles/Button.module.css";
+import { useEffect } from "react";
 
 const FormField = () => {
     return(
@@ -17,7 +18,17 @@ const FormField = () => {
 }
 
 const FormLayout = (props) => {
-    const { handleSubmit, pristine, submitting } = props;
+    const { handleSubmit, pristine, submitting, data } = props;
+    const dispatch = useDispatch();
+   
+    useEffect(()=>{
+        if(data){
+            Object.keys(data).map((key)=>{
+                dispatch(change("userprofile", key, data[key]))
+            })
+        }
+    },[data])
+    
     return(
         <Form onSubmit={handleSubmit}>
             <FormField />
@@ -32,7 +43,7 @@ const FormLayout = (props) => {
     )
 }
 export default reduxForm({
-form:"userpost",
+form:"userprofile",
 destroyOnUnmount:false,
 forceUnregisterOnUnmount:false,
 })(FormLayout);
