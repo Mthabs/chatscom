@@ -12,6 +12,7 @@ import Profile from "./pages/profiles/BaseLayout"
 import UserPasswordForm from "./pages/profiles/UserPasswordForm";
 import ProfileEdit from "./pages/profiles/form/BaseLayout";
 import Friends from './pages/friends/Friends';
+import Messages from "./pages/messages/BaseLayout";
 
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route exact path="/profiles/:id/edit/password" render={() => <UserPasswordForm />} />
           <Route exact path="/profiles/:id/edit" render={() => <ProfileEdit />} /> 
           <Route path="/friends" render={() => <Friends />} />
+          <Route path="/messages" render={() => <Messages />} />
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
       </Container>
