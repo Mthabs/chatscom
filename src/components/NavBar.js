@@ -28,6 +28,7 @@ const NavBar = () => {
   };
 
   const handleClick = (path) =>{
+    console.log(path)
     navigate.push(path)
     document.location.reload();
   }
@@ -108,6 +109,22 @@ const NavBar = () => {
             >
               <i className="fas fa-user-friends"></i>Friends
             </NavLink>}
+            {auth &&<NavLink
+              className={styles.NavLink}
+              activeClassName={styles.Active}
+              to=""
+              onClick={()=>{handleClick("/messages")}}
+            >
+              <i className="far fa-comment"></i>Messages
+            </NavLink>}
+            {/* {auth &&<NavLink
+              className={styles.NavLink}
+              activeClassName={styles.Active}
+              to=""
+              onclick={()=>{handleClick("/")}}
+              >
+               <i class="far fa-comment"></i>Messages
+              </NavLink>} */}
             {auth ? loggedInIcons : loggedOutIcons}
           </Nav>
         </Navbar.Collapse>
