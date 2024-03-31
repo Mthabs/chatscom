@@ -37,7 +37,7 @@ function SignInForm() {
         alert("You're not connected to Internet. Please Check your network Connection")
       }
       else if(e.response.status === 400 ){
-        throw new SubmissionError(e.response.data);
+        alert("Unable to log in with provided credentials.");
       }
       else{
         alert(e.response.status);
