@@ -38,8 +38,9 @@ const SideNav = (props) => {
       const handleUserClick = async (id) =>{
         const response = await customaxios.post('messages/add/person/'+id+'/')
         if(response.status === 200 || response.status === 201){
+            handleClose()
             handleSetChat(response.data)
-            document.location.reload()
+            // document.location.reload()
         }
       }
 
