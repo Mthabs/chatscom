@@ -44,6 +44,4 @@ const FormLayout = (props) => {
 }
 export default reduxForm({
 form:"userprofile",
-destroyOnUnmount:false,
-forceUnregisterOnUnmount:false,
 })(FormLayout);
