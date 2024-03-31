@@ -170,7 +170,7 @@ const Profile = () => {
                 </div>
                 </div>
                 <div className="col pt-2">
-                {isDifferent && followId && <Button variant="danger" onClick={()=>{handleClick(false)}}>{status}</Button>}
+                {isDifferent && followId && <Button variant="danger" onClick={()=>{handleClick(false)}}>{status === "accepted" ? "unfollow" : "requested"}</Button>}
                 {isDifferent && !followId && <Button variant="info" onClick={()=>{handleClick(true)}}>Follow</Button>}{' '}
                 </div>
             </div>

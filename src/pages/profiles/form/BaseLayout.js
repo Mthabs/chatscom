@@ -2,10 +2,16 @@ import { Col, Row } from "react-bootstrap";
 import FormLayout from "./FormLayout"
 import { customaxios } from "../../../api/axiosDefaults";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { useEffect, useState } from "react";
 
 const ProfileEdit = () =>{
-    const navigate = useHistory()
-    const {id} = useParams()
+    const navigate = useHistory();
+    const {id} = useParams();
+    const [data, setData ] = useState(null);
+
+    useEffect(()=>{
+        fetchUserDetail()
+    },[])
     const handleSubmit= async (values)=>{
         const formdata = new FormData()
         if(values.profile_picture){
@@ -27,11 +33,20 @@ const ProfileEdit = () =>{
             window.location.reload()
         }
     }
+
+    const fetchUserDetail = async() => {
+        const response = await customaxios.get('profile/edit/'+id+"/")
+        if(response.status === 200){
+            setData(response.data)
+            console.log(":hi")
+        }
+    }
+
     return(
         <Row>
             <Col md={4}>
                 <h3>Update Your Profile</h3>
-                <FormLayout onSubmit={handleSubmit} />
+                { data && <FormLayout onSubmit={handleSubmit} data={data} /> }
             </Col>
         </Row>
     )
