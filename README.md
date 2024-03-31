@@ -1,5 +1,5 @@
 
-## chatcom Chat Platform
+## chatcom Platform
 
 ## Introduction
 
@@ -310,12 +310,19 @@ Now back to Heroku Dashboard,
 6.	The live version can be accessed here, https://chatcom-frontend-40488c6b8cb7.herokuapp.com/
 
 ## Credits
+- Unsplash.com: I am immensely grateful to Unsplash for providing an extensive collection of high-quality, royalty-free images that have enhanced the visual appeal of my project. Their dedication to sharing stunning photography has been instrumental in bringing my ideas to life.
+
+- Font Awesome: My sincere appreciation goes to Font Awesome for offering a wide array of icons that have helped me effectively communicate concepts and enhance user experience within my project. Their library of icons has truly enriched the design and functionality of my work.
+
+- Bootstrap: I would like to express my deep appreciation to Bootstrap for providing a robust framework of responsive CSS that has streamlined the development process of my project. The flexibility and efficiency of Bootstrap have significantly contributed to creating a seamless and visually appealing user interface.
 
 ## Content
 
+-	code institute walkthrough projects
 -	News articles are user-generated.
 -	Commenting functionality implemented with guidance from specific Django, react documentation.
 -	Icons sourced from Font Awesome.
+-	My mentor: Anto Rodriguez
 
 ## Media
 
