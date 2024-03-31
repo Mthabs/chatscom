@@ -20,9 +20,13 @@ const UserPasswordForm = () => {
     new_password1: "",
     new_password2: "",
   });
-  const { new_password1, new_password2 } = userData;
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({
+    new_password1: [],
+    new_password2: [],
+  });
+
+  const { new_password1, new_password2 } = userData;
 
   const handleChange = (event) => {
     setUserData({
@@ -34,18 +38,23 @@ const UserPasswordForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      if(new_password1 !== new_password2){
-        setErrors("Passwords Doesn't Match")
-      }
-      else{
-        const response = await customaxios.patch("/auth/password/change/", userData);
-        alert(response.data.message)
+      if (new_password1 !== new_password2) {
+        setErrors({
+          new_password1: ["Passwords don't match"],
+          new_password2: ["Passwords don't match"],
+        });
+      } else {
+        const response = await customaxios.patch(
+          "/auth/password/change/",
+          userData
+        );
+        alert(response.data.message);
         history.goBack();
-        window.location.reload()
+        window.location.reload();
       }
     } catch (err) {
       console.log(err);
-      setErrors(err.response?.data);
+      setErrors(err.response?.data || {});
     }
   };
 
@@ -63,12 +72,12 @@ const UserPasswordForm = () => {
                 onChange={handleChange}
                 name="new_password1"
               />
+              {errors.new_password1.map((message, idx) => (
+                <Alert key={idx} variant="warning">
+                  {message}
+                </Alert>
+              ))}
             </Form.Group>
-            {errors?.new_password1?.map((message, idx) => (
-              <Alert key={idx} variant="warning">
-                {message}
-              </Alert>
-            ))}
             <Form.Group>
               <Form.Label>Confirm password</Form.Label>
               <Form.Control
@@ -78,12 +87,12 @@ const UserPasswordForm = () => {
                 onChange={handleChange}
                 name="new_password2"
               />
+              {errors.new_password2.map((message, idx) => (
+                <Alert key={idx} variant="warning">
+                  {message}
+                </Alert>
+              ))}
             </Form.Group>
-            {errors?.new_password2?.map((message, idx) => (
-              <Alert key={idx} variant="warning">
-                {message}
-              </Alert>
-            ))}
             <Button
               className={`${btnStyles.Button} ${btnStyles.Blue}`}
               onClick={() => history.goBack()}
